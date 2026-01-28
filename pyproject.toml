@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylib-aridge"
+version = "0.0.1"
+authors = [
+  { name="Jacob Jiang", email="jacobjiangmj@gmail.com" },
+]
+description = "py utils lib"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "Apache-2.0"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/jacobjiangmj/pylib"
+Issues = "https://github.com/jacobjiangmj/pylib/issues"
