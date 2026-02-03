@@ -3,8 +3,10 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
+#name = "pylib-test"
+#version = "0.0.11"
 name = "pylib-aridge"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Jacob Jiang", email="jacobjiangmj@gmail.com" },
 ]
