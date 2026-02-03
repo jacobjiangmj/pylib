@@ -20,3 +20,7 @@ python3 -m twine upload --repository pypi dist/* --verbose
 # pip install -U -i https://test.pypi.org/simple/ pylib-test
 # pip install -U pylib-test
 # pip install -U pylib-aridge
+# download cnt: curl https://pypistats.org/api/packages/pylib-aridge/recent
+# download cnt: curl https://pypistats.org/api/packages/pylib-test/recent
+# download overall: curl -s https://pypistats.org/api/packages/pylib-aridge/overall | jq -r '.data[] | [.date, .downloads] | @tsv'
+# other stats: https://pypistats.org/api/
