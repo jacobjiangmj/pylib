@@ -1,19 +1,35 @@
-import time
+import os
 
+from pylib.log import log
+from pylib.callback_dict import CallbackDict
 from pylib.api.feishu_api import FeishuApi
+
+
+class Callback:
+    feishu_api_robot_monitoring_url = os.getenv('feishu-api.robot.standard.url')
+
+    @classmethod
+    def callback(cls, obj, key, value, old_value):
+        if key == 'alertmanager-webhook.production':
+            if old_value == 1 and value == 0:
+                FeishuApi.send(f"告警通知应用无心跳: {key} - {value} ❌", url=cls.feishu_api_robot_monitoring_url)
+            elif old_value == 0 and value == 1:
+                FeishuApi.send(f"告警通知应用心跳恢复: {key} - {value} ✅", url=cls.feishu_api_robot_monitoring_url)
+            log.info(f"{key} - {value} old_value: {old_value}")
 
 
 class Main:
     @staticmethod
-    def _func(*args):
-        time.sleep(1)
+    def _func(*args, **kwargs):
+        print(args, kwargs)
         return args
 
     @staticmethod
     def run():
-        last_notify, notify_interval = 0, 6 * 3600
-        if time.time() - last_notify > notify_interval:
-            FeishuApi.send('告警通知应用无心跳', url='https://open.feishu.cn/open-apis/bot/v2/hook/609f3a61-70d5-4fe1-a627-593d3b30808c')
+        a = CallbackDict(Callback.callback)
+        a['alertmanager-webhook.production'] = 0
+        a['alertmanager-webhook.production'] = 1
+        a['alertmanager-webhook.production'] = 0
 
 
 if __name__ == "__main__":
