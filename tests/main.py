@@ -1,8 +1,8 @@
 import os
 
 from pylib.log import log
-from pylib.callback_dict import CallbackDict
 from pylib.api.feishu_api import FeishuApi
+from pylib.api.gitlab_api import GitlabApi
 
 
 class Callback:
@@ -26,10 +26,12 @@ class Main:
 
     @staticmethod
     def run():
-        a = CallbackDict(Callback.callback)
-        a['alertmanager-webhook.production'] = 0
-        a['alertmanager-webhook.production'] = 1
-        a['alertmanager-webhook.production'] = 0
+        projects = [580, 495, 1500, 582, 491, 2713, 1671, 2353, 1520, 493, ]
+        for project in projects:
+            # rst = GitlabApi.add_project_member(project, 860, 30)
+            rst = GitlabApi.add_project_member(project, 639, 30)
+            print(rst.status_code, rst.text)
+            break
 
 
 if __name__ == "__main__":
