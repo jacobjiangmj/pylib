@@ -459,17 +459,24 @@ class Methods:
             return '127.0.0.1'  # 失败时返回本地回环地址
 
     @staticmethod
-    def format_timedelta(datetime_start, datetime_end=datetime.now()):
+    def to_datetime(dt):
+        """将时间转换为日期时间"""
+        if isinstance(dt, float):     # 时间戳浮点数转日期格式
+            return datetime.fromtimestamp(dt * (0.001 if dt > 5572207999 else 1))   # 5572207999 -> 2146-07-30 11:33:19.000
+        elif isinstance(dt, str):     # 日期字符串转日期格式
+            if 'Z' in dt:
+                return datetime.fromisoformat(dt.replace('Z', '+00:00'))
+            else:
+                dt = float(dt)
+                return datetime.fromtimestamp(dt * (0.001 if dt > 5572207999 else 1))  # 5572207999 -> 2146-07-30 11:33:19.000
+        return dt
+
+    @classmethod
+    def format_timedelta(cls, datetime_start, datetime_end=datetime.now()):
         """格式化时间差"""
         # 0. 数据兼容性处理
-        if isinstance(datetime_start, float):   # 时间戳浮点数转日期格式
-            datetime_start = datetime.fromtimestamp(datetime_start)
-        elif isinstance(datetime_start, str):   # 日期字符串转日期格式
-            datetime_start = datetime.fromisoformat(datetime_start.replace('Z', '+00:00'))
-        if isinstance(datetime_end, float):     # 时间戳浮点数转日期格式
-            datetime_end = datetime.fromtimestamp(datetime_end)
-        elif isinstance(datetime_end, str):     # 日期字符串转日期格式
-            datetime_end = datetime.fromisoformat(datetime_end.replace('Z', '+00:00'))
+        datetime_start = cls.to_datetime(datetime_start)
+        datetime_end = cls.to_datetime(datetime_end)
         # 转UTC转CST时间
         datetime_start = datetime_start.astimezone(timezone(timedelta(hours=8)))
         datetime_end = datetime_end.astimezone(timezone(timedelta(hours=8)))
@@ -561,3 +568,13 @@ class Methods:
         data = list(data)
         json_str = json.dumps(data, sort_keys=True, separators=(',', ':'))  # 使用JSON确保序列化的一致性
         return hashlib.md5(json_str.encode('utf-8')).hexdigest()  # 生成MD5哈希作为字符串ID
+
+    @classmethod
+    def is_over_datetime(cls, datetime_target, **kwargs) -> bool:
+        """判断时间是否超过: days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0"""
+        return cls.to_datetime(datetime_target) > datetime.now(timezone.utc) - timedelta(**kwargs)
+
+    @classmethod
+    def is_under_datetime(cls, datetime_target, **kwargs) -> bool:
+        """判断时间是否低于"""
+        return cls.to_datetime(datetime_target) < datetime.now(timezone.utc) - timedelta(**kwargs)

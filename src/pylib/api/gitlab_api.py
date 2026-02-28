@@ -30,7 +30,7 @@ class GitlabAccessLevel(IntEnum):
 class GitlabApi:
     url = os.getenv("gitlab-api.url")
     _headers = {
-        "PRIVATE-TOKEN": os.getenv('gitlab-api.access_token')
+        "PRIVATE-TOKEN": os.getenv('gitlab-api.PRIVATE-TOKEN')
     }
     stop_status = ['success', 'failed', 'canceled', 'skipped', 'manual', 'scheduled']
     failed_status = ['failed', 'canceled', 'skipped', 'manual', 'scheduled']
@@ -262,6 +262,11 @@ class GitlabApi:
     def delete_pipeline(cls, project_id: int, pipeline_id: int):
         return requests.delete(f"{cls.url}/projects/{project_id}/pipelines/{pipeline_id}",
                              headers=cls._headers, timeout=10)
+
+    @classmethod
+    def get_project_jobs(cls, project_id: int, **kwargs):
+        return request.get(f"{cls.url}/projects/{project_id}/jobs",
+                           headers=cls._headers, params={**cls.params, **kwargs}, timeout=10)
 
     @classmethod
     def get_jobs(cls, project_id: int, pipeline_id: int):
