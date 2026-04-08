@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 #name = "pylib-test"
 #version = "0.0.21"
 name = "pylib-aridge"
-version = "0.0.7"
+version = "0.1.0"
 authors = [
   { name="Jacob Jiang", email="jacobjiangmj@gmail.com" },
 ]
@@ -19,7 +19,7 @@ classifiers = [
 ]
 license = "Apache-2.0"
 license-files = ["LICEN[CS]E*"]
-dependencies = ["aiohttp==3.13.3", "requests==2.32.5"]
+dependencies = ["aiohttp==3.13.3", "requests==2.32.5", "PyYAML~=6.0", "pycryptodome~=3.23.0"]
 
 [project.urls]
 Homepage = "https://github.com/jacobjiangmj/pylib"

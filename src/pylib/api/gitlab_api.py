@@ -479,6 +479,12 @@ class GitlabApi:
         return requests.post(f"{cls.url}/groups/{group_id}/members", headers=cls._headers, data=data)
 
     @classmethod
+    def update_group_member(cls, group_id, user_id, access_level=30):
+        """更新用户组权限"""
+        params = {"access_level": access_level}
+        return requests.put(f"{cls.url}/groups/{group_id}/members/{user_id}", headers=cls._headers, params=params)
+
+    @classmethod
     def remove_group_member(cls, group_id, user_id):
         """从群组中移除用户"""
         return requests.delete(f"{cls.url}/groups/{group_id}/members/{user_id}", headers=cls._headers)
@@ -507,6 +513,12 @@ class GitlabApi:
             "access_level": int(access_level)
         }
         return requests.post(f"{cls.url}/projects/{project_id}/members", headers=cls._headers, data=data)
+
+    @classmethod
+    def update_project_member(cls, project_id, user_id, access_level=GitlabAccessLevel.DEVELOPER):
+        """更新用户项目权限"""
+        params = {"access_level": int(access_level)}
+        return requests.put(f"{cls.url}/projects/{project_id}/members/{user_id}", headers=cls._headers, params=params)
 
     @classmethod
     def remove_project_member(cls, project_id, user_id):
@@ -616,6 +628,17 @@ class GitlabApi:
         return requests.get(url, headers=cls._headers, params=params).json()
 
     @classmethod
+    def get_project_members(cls, project_id):
+        """获取项目成员"""
+        return requests.get(f"{cls.url}/projects/{project_id}/members", headers=cls._headers, params=cls.params)
+
+    @classmethod
+    def update_project_members(cls, project_id, user_id, access_level=GitlabAccessLevel.DEVELOPER, **kwargs):
+        """更新项目成员权限等属性"""
+        params = {**cls.params, "access_level": access_level, **kwargs}
+        return requests.put(f"{cls.url}/projects/{project_id}/members/{user_id}", headers=cls._headers, params=params)
+
+    @classmethod
     def add_merge_note(cls, project_id, merge_request_iid, body):
         url = f"{cls.url}/projects/{project_id}/merge_requests/{merge_request_iid}/notes"
         return requests.post(url, json={"body": body}, headers=cls._headers).json()
@@ -703,9 +726,24 @@ class GitlabApi:
 
     @classmethod
     def get_all_groups(cls):
-        url = f"{cls.url}/groups"
-        params = {"per_page": 100}
-        return cls.get_all(url=url, params=params)
+        """获取项目组列表"""
+        return cls.get_all(url=f"{cls.url}/groups", params=cls.params)
+
+    @classmethod
+    def search_group(cls, group_name):
+        """按组名搜索项目组"""
+        params = {"search": group_name}
+        return requests.get(f"{cls.url}/groups", headers=cls._headers, params=params)
+
+    @classmethod
+    def get_group_id(cls, group_name):
+        """按组名获取项目组ID"""
+        return list(filter(lambda g: group_name == g['full_path'], cls.search_group(group_name).json()))[0]['id']
+
+    @classmethod
+    def get_group_members(cls, group_id):
+        """获取项目组成员"""
+        return requests.get(f"{cls.url}/groups/{group_id}/members", headers=cls._headers, params=cls.params)
 
     @classmethod
     def update_group_member_access_level(cls, group_id, user_id, access_level):
