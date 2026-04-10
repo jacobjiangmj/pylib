@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 #name = "pylib-test"
 #version = "0.0.21"
 name = "pylib-aridge"
-version = "0.1.2"
+version = "0.1.3"
 authors = [
   { name="Jacob Jiang", email="jacobjiangmj@gmail.com" },
 ]

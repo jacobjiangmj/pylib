@@ -182,26 +182,26 @@ class GitlabApi:
     @classmethod
     def delete_branch(cls, project_id, branch):
         """删除代码库分支"""
-        return request.delete(f"{cls.url}/projects/{project_id}/repository/branches/{urllib.parse.quote_plus(branch)}",
+        return requests.delete(f"{cls.url}/projects/{project_id}/repository/branches/{urllib.parse.quote_plus(branch)}",
                                headers=cls._headers, timeout=10)
 
     @classmethod
-    def get_protected_branch(cls, project_id, branch):
+    def get_protected_branch(cls, project_name_or_id, branch):
         """获取保护仓库分支"""
-        return requests.get(f"{cls.url}/projects/{project_id}/protected_branches/{urllib.parse.quote_plus(branch)}",
+        return requests.get(f"{cls.url}/projects/{urllib.parse.quote(str(project_name_or_id), safe="")}/protected_branches/{urllib.parse.quote_plus(branch)}",
                             headers=cls._headers, timeout=10)
 
     @classmethod
-    def protect_branch(cls, project_id, branch, **kwargs):
+    def protect_branch(cls, project_name_or_id, branch, **kwargs):
         """保护仓库分支"""
         data = {"name": branch, **kwargs}
-        return requests.post(f"{cls.url}/projects/{project_id}/protected_branches",
+        return requests.post(f"{cls.url}/projects/{urllib.parse.quote(str(project_name_or_id), safe="")}/protected_branches",
                                headers=cls._headers, data=data, timeout=10)
 
     @classmethod
-    def unprotect_branch(cls, project_id, branch):
+    def unprotect_branch(cls, project_name_or_id, branch):
         """取消保护仓库分支"""
-        return requests.delete(f"{cls.url}/projects/{project_id}/protected_branches/{urllib.parse.quote_plus(branch)}",
+        return requests.delete(f"{cls.url}/projects/{urllib.parse.quote(str(project_name_or_id), safe="")}/protected_branches/{urllib.parse.quote_plus(branch)}",
                                headers=cls._headers, timeout=10)
 
     @classmethod
