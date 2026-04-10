@@ -718,11 +718,11 @@ class GitlabApi:
     @classmethod
     def repository_compare(cls, project_id, from_, to):
         url = f"{cls.url}/projects/{urllib.parse.quote_plus(str(project_id))}/repository/compare"
-        return request.get(url, headers=cls._headers, params={"from": from_, "to": to}).json()
+        return requests.get(url, headers=cls._headers, params={"from": from_, "to": to})
 
     @classmethod
-    def get_branches_diff(cls, project_id, source_branch, target_branch):
-        return cls.repository_compare(project_id, from_=target_branch, to=source_branch)
+    def get_branches_diff(cls, project_id, from_, to):
+        return cls.repository_compare(project_id, from_=from_, to=to)
 
     @classmethod
     def get_all_groups(cls):
